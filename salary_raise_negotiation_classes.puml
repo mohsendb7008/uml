@@ -1,0 +1,43 @@
+@startuml
+class Employee {
+  +name
+}
+class Developer {
+}
+class Manager {
+}
+class Task {
+}
+class TaskPerformance {
+  +completionPercentage
+  +score
+}
+class SalaryRaiseRequest {
+  +date
+}
+class RequestPriority {
+  +priority
+}
+class PerformanceReportSummary {
+}
+class Negotiation {
+  +date
+  +status
+  +rescheduleDate
+}
+class NegotiationHistory {
+  +dateOfReturn
+  +reasonOfReturn
+}
+Employee <|-- Developer
+Employee <|-- Manager
+Developer "1" --- "*" Task
+(Developer, Task) .. TaskPerformance
+Employee "1" ---  "*" SalaryRaiseRequest
+(Employee, SalaryRaiseRequest) .. RequestPriority
+Developer "1" --- "1" PerformanceReportSummary
+PerformanceReportSummary o-- "*" TaskPerformance
+Negotiation o--- "*" RequestPriority
+Negotiation *--- "1" PerformanceReportSummary
+Negotiation *--- "*" NegotiationHistory
+@enduml

@@ -1,0 +1,34 @@
+@startuml
+actor Doctor as doctor
+actor Nurse as nurse
+participant EmergencyControl as emergency
+participant EmergencyRequest as request
+participant SMSDispatcher as sms
+database Staff as staff
+activate emergency
+doctor -> emergency : login
+doctor -> emergency : request_emergency(nurses, room_number)
+emergency -> request : create(nurses, room_number)
+activate request
+emergency -> staff : lookup_contact_details(nurses)
+activate staff
+staff -> emergency : return contact_details
+deactivate staff
+emergency -> sms : inform(contact_details)
+activate sms
+sms -> request : get_room_number()
+request -> sms : return room_number
+loop contact_details
+  sms -> sms : send_sms(nurse_phone_number, room_number)
+end
+nurse -> sms : check_sms()
+deactivate sms
+alt no nurse is available
+  doctor -> emergency : try_contact_again()
+else
+  doctor -> emergency : archive_emergency_request()
+  emergency -> request : archive()
+  destroy request
+end
+deactivate emergency
+@enduml

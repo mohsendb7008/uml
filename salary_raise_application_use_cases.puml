@@ -1,0 +1,41 @@
+@startuml
+left to right direction
+:Employee: as employee
+:Software Developer: as softwareDev
+:IT Manager: as itManager
+:Financial Manager: as financeManager
+employee <|-- softwareDev
+employee <|-- itManager
+employee <|-- financeManager
+package System {
+  (Login) as login
+  (ValidateUser) as validateUser
+  (FillSalaryRaiseRequest) as fillRequest
+  (ReviewApplication) as reviewApp
+  (CheckPerformance) as checkPerform
+  (CheckPriority) as checkPrio
+  (SendApplicationToFinance) as sendApp
+  (EvaluateApplication) as evalApp
+  (CheckBudget) as checkBudget
+  (ApproveApplication) as approveApp
+  reviewApp ..> checkPerform : <<include>>
+  reviewApp ..> checkPrio : <<include>>
+  evalApp ..> checkBudget : <<include>>
+  (InvalidCredentials) ..> validateUser : <<extend>>
+  (PerformanceConflict) ..> checkPerform : <<extend>>
+  (PriorityConflict) ..> checkPrio : <<extend>>
+  (PostponeApplication) ..> evalApp : <<extend>>
+  (RejectApplication) ..> reviewApp : <<extend>>
+  (RejectApplication) ..> evalApp : <<extend>>
+}
+employee ---> login
+employee ---> validateUser
+softwareDev ---> fillRequest
+itManager ---> reviewApp
+itManager ---> checkPerform
+itManager ---> checkPrio
+itManager ---> sendApp
+financeManager ---> evalApp
+financeManager ---> checkBudget
+financeManager ---> approveApp
+@enduml
