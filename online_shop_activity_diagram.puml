@@ -1,0 +1,58 @@
+@startuml
+|Employee|
+start
+:login;
+if (validate credentials?) then (fail)
+  :repeat process or click forgot password;
+  kill
+else (success)
+  :select request resources service;
+  |Resource Service|
+  if (item available at main branch?) then (yes)
+    label sp_lab1
+    label sp_lab1
+    label sp_lab1
+    label sp_lab1
+    label lb
+    :payment;
+    label sp_lab2
+    :send order to delivery;
+    |Delivery Dept|
+    :receive order;
+    if (item is wrong?) then (yes)
+      :change request status to refund;
+      kill
+    else (no)
+      if (address is wrong?) then (yes)
+        :return to warehouse;
+        kill
+      else (no)
+        :deliver order;
+        |Employee|
+        :receive the package;
+        :change request status to closed;
+      endif
+    endif
+  |Employee|
+  else (no)
+    |Resource Service|
+    fork
+      :change request status to pending;
+      kill
+    forkagain
+      :request order online;
+    endmerge
+    if (item available online?) then (yes)
+      goto lb
+    else (no)
+      label sp_lab
+      label sp_lab
+      |Employee|
+      :change request status to failed;
+      kill
+    endif
+    |Resource Service|
+  endif
+endif
+stop
+@enduml
