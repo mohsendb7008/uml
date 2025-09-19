@@ -1,0 +1,85 @@
+@startuml
+left to right direction
+skinparam actorStyle awesome
+title "SEP Internal System — Use Case Diagram"
+
+actor "Customer Service Officer" as cso
+actor "Senior Customer Service Officer" as scso
+actor "Administration Manager" as adminMgr
+actor "Financial Manager" as finMgr
+actor "Production Manager" as prodMgr
+actor "Service Manager" as servMgr
+actor "HR Team" as hr
+actor "Marketing Officer" as marketing
+actor "Vice President" as vp
+
+usecase ("Initiate Event Planning Request") as UC_Initiate
+usecase ("Enter Client & Event Details") as UC_EnterDetails
+usecase ("Review Request") as UC_Review
+usecase ("Approve/Reject Request") as UC_Decide
+usecase ("Schedule Business Meeting") as UC_Meeting
+usecase ("Create/Update Client Record") as UC_ClientRecord
+usecase ("Search/View Client Records") as UC_SearchClients
+usecase ("Record Meeting Outcomes") as UC_RecordMeeting
+usecase ("Estimate Initial Budget") as UC_BudgetEstimate
+usecase ("Negotiate Budget with Client") as UC_BudgetNegotiate
+usecase ("Request Budget Adjustment") as UC_BudgetAdjust
+usecase ("Check Staff Availability") as UC_CheckStaff
+usecase ("Request Hiring/Outsourcing") as UC_Hire
+usecase ("Manage Staff Schedules") as UC_Schedules
+usecase ("Initiate Sub‑team Tasks") as UC_SubTasks
+usecase ("Submit Sub‑team Plan & Comments") as UC_SubPlans
+usecase ("Update Application Status") as UC_Status
+usecase ("Archive Closed Application") as UC_Archive
+usecase ("Search/View Employees' Records") as UC_SearchEmployees
+usecase ("Generate Reports") as UC_Reports
+usecase ("Generate Clients/Events Earnings Reports") as UC_MarketingReports
+usecase ("Make Discount for Frequent Client") as UC_Discount
+
+UC_Initiate --> UC_EnterDetails : <<include>>
+UC_Review --> UC_Decide : <<include>>
+UC_Meeting --> UC_RecordMeeting : <<include>>
+UC_BudgetAdjust --> UC_BudgetNegotiate : <<include>>
+UC_SubTasks --> UC_CheckStaff : <<include>>
+UC_Meeting --> UC_Decide : <<extend>>
+UC_BudgetAdjust --> UC_BudgetEstimate : <<extend>>
+UC_Hire --> UC_CheckStaff : <<extend>>
+UC_BudgetAdjust --> UC_SubPlans : <<extend>>
+UC_Archive --> UC_Status : <<extend>>
+
+cso ---> UC_Initiate
+cso ---> UC_EnterDetails
+scso ---> UC_Review
+scso ---> UC_ClientRecord
+scso ---> UC_SearchClients
+scso ---> UC_Meeting
+scso ---> UC_RecordMeeting
+adminMgr ---> UC_Review
+adminMgr ---> UC_Decide
+adminMgr ---> UC_Reports
+adminMgr ---> UC_SearchEmployees
+finMgr ---> UC_BudgetEstimate
+finMgr ---> UC_BudgetNegotiate
+finMgr ---> UC_SearchClients
+finMgr ---> UC_SearchEmployees
+finMgr ---> UC_Discount
+finMgr ---> UC_Reports
+prodMgr ---> UC_SubTasks
+prodMgr ---> UC_CheckStaff
+prodMgr ---> UC_Hire
+prodMgr ---> UC_BudgetAdjust
+prodMgr ---> UC_Schedules
+prodMgr ---> UC_Status
+servMgr ---> UC_SubTasks
+servMgr ---> UC_CheckStaff
+servMgr ---> UC_Hire
+servMgr ---> UC_BudgetAdjust
+servMgr ---> UC_Schedules
+servMgr ---> UC_Status
+hr ---> UC_SearchEmployees
+hr ---> UC_Hire
+marketing ---> UC_SearchClients
+marketing ---> UC_MarketingReports
+vp ---> UC_Reports
+
+@enduml
