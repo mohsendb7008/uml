@@ -1,0 +1,11 @@
+@startuml
+[*] --> Open : new request available
+Open --> Rejected : infeasible
+Open --> InProgress : negotiation needed
+InProgress --> Rejected : low availability / new high budget
+InProgress --> Approved : task distribution ok + new budget ok
+Approved --> Closed : finalize
+Closed --> Archived : event is finished
+Rejected --> [*]
+Archived --> [*]
+@enduml

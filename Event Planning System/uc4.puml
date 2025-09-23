@@ -1,0 +1,32 @@
+@startuml
+actor "Financial Manager" as FM
+participant "Finance Dashboard" as UI
+participant "UC4Controller" as UC4
+participant "BudgetService" as Svc
+participant "BudgetRepository" as Repo
+FM -> UI: Open budget request
+UI -> UC4: proposeBudget(requestId, amount)
+UC4 -> Svc: createBudget(requestId, amount)
+Svc -> Repo: saveBudget(Budget{amount})
+Repo --> Svc: Budget{id}
+Svc --> UC4: Budget{id}
+UC4 --> UI: showBudget(id)
+FM -> UI: updateBudget(negotiatedAmount)
+UI -> UC4: updateBudget(id, negotiatedAmount)
+UC4 -> Svc: updateBudget(id, negotiatedAmount)
+Svc -> Repo: update(Budget{negotiatedAmount})
+Repo --> Svc: Budget{updated}
+Svc --> UC4: Budget{id}
+UC4 --> UI: Budget{id}
+alt Agreement
+  FM -> UI: markAgreed(Budget{id})
+  UI -> UC4: markAgreed(Budget{id})
+  UC4 -> Svc: markAgreed(Budget{id})
+  Svc -> Repo: update(Budget{Agreed})
+else Rejected
+  FM -> UI: markRejected(Budget{id})
+  UI -> UC4: markRejected(Budget{id})
+  UC4 -> Svc: markRejected(Budget{id})
+  Svc -> Repo: update(Budget{Rejected})
+end
+@enduml

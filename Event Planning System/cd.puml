@@ -1,0 +1,58 @@
+@startuml
+
+enum Role {
+  CustomerServiceOfficer
+  SeniorCustomerServiceOfficer
+  AdministrationManager
+  FinancialManager
+  ProductionManager
+  ServiceManager
+  HR
+  MarketingOfficer
+  VicePresident
+}
+enum RequestStatus {
+  Open
+  InProgress
+  Closed
+  Archived
+}
+
+class User {
+  +id: UUID
+  +name: String
+  +email: String
+}
+class EventPlanningRequest {
+  +id: UUID
+  +title: String
+  +description: Text
+  +submittedAt: DateTime
+  +budgetEstimate: Money
+  +approvedBudget: Money
+}
+class Review {
+  +id: UUID
+  +comments: Text
+  +submittedAt: DateTime
+}
+class Budget {
+  +id: UUID
+  +proposedAmount: Money
+  +negotiatedAmount: Money
+}
+class Task {
+  +id: UUID
+  +title: String
+  +dueDate: Date
+}
+
+User "1" o-- "1" Role
+User "1" --- "*" Task
+User "1" --- "*" Review
+User "1" --- "*" EventPlanningRequest
+EventPlanningRequest "1" o-- "1" RequestStatus
+EventPlanningRequest "1" o-- "*" Review
+EventPlanningRequest "1" o-- "*" Task
+EventPlanningRequest "1" --- "*" Budget
+@enduml

@@ -1,0 +1,20 @@
+@startuml
+actor "Senior Customer Service Officer" as SCSO
+actor "Production Manager" as PM
+participant "Production Dashboard" as UI
+participant "UC3Controller" as UC3
+participant "EventService" as Esvc
+participant "TaskService" as Svc
+participant "EventRepository" as EventRepo
+participant "TaskRepository" as Repo
+SCSO -> UC3: updateStatus(requestId, InProgress)
+UC3 -> Esvc: updateStatus(requestId, InProgress) 
+Esvc -> EventRepo: updateStatus(requestId, InProgress) 
+PM -> UI: createSubteamTasks
+UI -> UC3: createTasks(requestId, tasks[])
+UC3 -> Svc: batchCreate(tasks[])
+Svc -> Repo: saveAll(tasks[])
+Repo --> Svc: tasks[]
+Svc --> UC3: tasks[]
+UC3 --> UI: showTasks()
+@enduml

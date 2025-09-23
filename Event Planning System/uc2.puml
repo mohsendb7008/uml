@@ -1,0 +1,24 @@
+@startuml
+actor "Senior Customer Service Officer" as SCSO
+participant "Admin Dashboard" as UI
+participant "UC2Controller" as UC2
+participant "ReviewService" as Svc
+participant "EventRepository" as Repo
+SCSO -> UI: Open pending requests
+UI -> UC2: listPending()
+UC2 -> Repo: findByStatus(Open)
+Repo --> UC2: Requests[]
+SCSO -> UI: Open request
+UI -> UC2: startReview(requestId)
+UC2 -> Repo: lock(requestId)
+SCSO -> UI: Decide Approve/Reject
+UI -> UC2: recordReview(requestId, decision, comments)
+UC2 -> Svc: recordReview(requestId, decision, comments)
+alt request is rejected
+  Svc -> Repo: updateByStatus(requestId, Rejected)
+  Svc --> UC2: updatedRequest{status=Rejected}
+else
+  UC2 --> UI: routeRequestToFinance()
+end
+UC2 --> UI: showUpdatedRequest()
+@enduml
