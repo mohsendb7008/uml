@@ -1,0 +1,43 @@
+@startuml
+actor User as EndUser
+
+node "User Device" as UserDevice {
+  artifact "Web Frontend (React JSX)" as FE
+}
+
+cloud "Internet" as Internet
+
+node "AWS" as AWS {
+  node "AWS Application Load Balancer (ALB)\nRouting Engine" as ALB
+  node "Amazon EKS (Kubernetes Cluster)" as EKS {
+    node "Namespace: sep-prod" as NS {
+      component "User Management API\n(.NET Core)" as SvcUser <<svc>>
+      component "Event Planning API\n(.NET Core)" as SvcPlan <<svc>>
+      component "Services API\n(.NET Core)" as SvcServices <<svc>>
+      component "Finance API\n(.NET Core)" as SvcFinance <<svc>>
+      component "Analytics API\n(.NET Core)" as SvcAnalytics <<svc>>
+      component "Ingress Controller" as Ingress <<ingress>>
+    }
+  }
+  database "Amazon Aurora PostgreSQL\n(Cluster, Multi-AZ)" as DB
+}
+
+rectangle "Klarna Payment Gateway\n(Third-party)" as Klarna
+
+EndUser --> FE : Browser
+FE --> Internet
+Internet --> ALB : HTTPS
+ALB --> Ingress : HTTP
+Ingress --> SvcUser
+Ingress --> SvcPlan
+Ingress --> SvcServices
+Ingress --> SvcFinance
+Ingress --> SvcAnalytics
+SvcUser --> DB : SSH
+SvcPlan --> DB : SSH
+SvcServices --> DB : SSH
+SvcFinance --> DB : SSH
+SvcAnalytics --> DB : SSH
+SvcFinance --> Klarna : Payments API
+Klarna ..> SvcFinance : Webhooks
+@enduml

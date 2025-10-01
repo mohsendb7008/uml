@@ -1,0 +1,121 @@
+@startuml
+package "User Management Subsystem" as UMS {
+  enum Role {
+    CustomerServiceOfficer
+    SeniorCustomerServiceOfficer
+    AdministrationManager
+    FinancialManager
+    ProductionManager
+    ServiceManager
+    HR
+    MarketingOfficer
+    VicePresident
+  }
+
+  class User {
+    +id: UUID
+    +name: String
+    +email: String
+    +createdAt: DateTime
+    +isActive: Boolean
+  }
+
+  class AuthCredential {
+    +userId: UUID
+    +passwordHash: String
+    +lastLoginAt: DateTime
+  }
+}
+
+package "Event Planning Subsystem" as EPS {
+  enum RequestStatus {
+    Open
+    InProgress
+    Closed
+    Archived
+  }
+
+  class EventPlanningRequest {
+    +id: UUID
+    +title: String
+    +description: Text
+    +submittedAt: DateTime
+    +budgetEstimate: Money
+    +approvedBudget: Money
+  }
+
+  class Review {
+    +id: UUID
+    +comments: Text
+    +submittedAt: DateTime
+  }
+}
+
+package "Services Subsystem" as SVC {
+  class Task {
+    +id: UUID
+    +title: String
+    +dueDate: Date
+    +status: String
+    +priority: Integer
+  }
+
+  class Resource {
+    +id: UUID
+    +name: String
+    +type: String
+  }
+
+  class Allocation {
+    +id: UUID
+  }
+}
+
+package "Finance Subsystem" as FIN {
+  class Budget {
+    +id: UUID
+    +proposedAmount: Money
+    +negotiatedAmount: Money
+  }
+
+  class Invoice {
+    +id: UUID
+    +issuedAt: DateTime
+    +dueAt: DateTime
+    +total: Money
+    +status: String
+  }
+
+  class Payment {
+    +id: UUID
+    +paidAt: DateTime
+    +amount: Money
+    +method: String
+    +status: String
+  }
+}
+
+package "Analytics Subsystem" as ANA {
+  class Report {
+    +id: UUID
+    +type: String
+    +createdAt: DateTime
+    +data: String
+  }
+}
+
+UMS.User "1" o-- "1" UMS.Role
+UMS.User "1" -- "1" UMS.AuthCredential
+EPS.EventPlanningRequest "1" o-- "1" EPS.RequestStatus
+EPS.EventPlanningRequest "1" o-- "*" EPS.Review
+SVC.Allocation "1" -- "1" SVC.Task
+SVC.Allocation "*" -- "1" SVC.Resource
+FIN.Invoice "1" o-- "*" FIN.Payment
+
+UMS.User "1" --- "*" SVC.Task
+UMS.User "1" --- "*" EPS.Review
+UMS.User "1" --- "*" EPS.EventPlanningRequest
+EPS.EventPlanningRequest "1" o-- "*" SVC.Task
+EPS.EventPlanningRequest "1" --- "1" FIN.Budget
+FIN.Invoice "1" --- "1" EPS.EventPlanningRequest
+@enduml
